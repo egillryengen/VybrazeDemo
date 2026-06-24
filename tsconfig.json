@@ -1,20 +1,39 @@
-{
+﻿{
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "nodenext",
+    "jsx": "react-jsx",
     "strict": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true,
+    "baseUrl": ".",
     "paths": {
-      "@/*": [
-        "./src/*"
-      ],
-      "@/assets/*": [
-        "./assets/*"
-      ]
-    }
+      "@/*": ["src/*"]
+    },
+    "ignoreDeprecations": "6.0",
+    "resolveJsonModule": true,
+    "allowJs": true,
+    "noEmit": true,
+    "types": [
+      "react",
+      "react-native"
+    ],
+    "lib": [
+      "ES2022"
+    ]
   },
   "include": [
-    "**/*.ts",
-    "**/*.tsx",
-    ".expo/types/**/*.ts",
-    "expo-env.d.ts"
+    "src",
+    "index.ts",
+    "index.tsx",
+    "app.json"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "build"
   ]
 }
