@@ -1,1 +1,6 @@
-import Home from '../screens/Home'; export default Home;
+﻿import React from 'react';
+import Home from '../screens/Home';
+
+export default function Index() {
+  return <Home />;
+}
