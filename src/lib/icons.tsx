@@ -1,3 +1,4 @@
+// src/lib/icons.tsx
 import React from 'react';
 import { Feather } from '@expo/vector-icons';
 import { ViewProps } from 'react-native';
