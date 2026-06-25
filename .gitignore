@@ -1,43 +1,144 @@
-# Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
+# ============================================================
+# GLOBAL / OS / IDE
+# ============================================================
 
-# dependencies
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# IDEs
+.vscode/
+.idea/
+*.iml
+*.ipr
+*.iws
+.classpath
+.project
+.settings/
+
+# Editor temp files
+*~
+*.swp
+*.swo
+*.tmp
+*.bak
+
+# ============================================================
+# NODE / JAVASCRIPT / TYPESCRIPT
+# ============================================================
+
 node_modules/
+npm-debug.log*
+yarn-error.log*
+yarn-debug.log*
+.pnpm-debug.log
 
-# Expo
+dist/
+build/
+*.jsbundle
+*.map
+*.tsbuildinfo
+
+# ============================================================
+# EXPO / METRO / RN
+# ============================================================
+
 .expo/
+.expo-shared/
 dist/
 web-build/
 expo-env.d.ts
 
-# Native
-.kotlin/
-*.orig.*
-*.jks
-*.p8
-*.p12
-*.key
-*.mobileprovision
-
-# Metro
 .metro-health-check*
+*.expo
+*.expo-shared
 
-# debug
+# ============================================================
+# NATIVE (iOS / ANDROID)
+# ============================================================
+
+# iOS
+ios/
+ios/Pods/
+ios/Flutter/ephemeral/
+ios/.generated/
+**/ios/**/*.mode1v3
+**/ios/**/*.mode2v3
+**/ios/**/*.pbxuser
+**/ios/**/*.perspectivev3
+**/ios/**/*.moved-aside
+**/ios/**/xcuserdata
+DerivedData/
+*.xcuserstate
+*.hmap
+*.ipa
+*.app
+
+# Android
+android/
+**/android/**/gradle-wrapper.jar
+**/android/**/captures/
+.gradle/
+local.properties
+android/key.properties
+*.jks
+*.keystore
+*.apk
+*.aab
+**/.cxx/
+
+# ============================================================
+# ENV / SECRETS
+# ============================================================
+
+.env
+.env.*
+.env.local
+.env*.local
+*.pem
+*.key
+*.crt
+*.p12
+*.jks
+secrets/
+*.secret
+
+# ============================================================
+# LOGS / DEBUG
+# ============================================================
+
+*.log
+*.buildlog
+*.symbols
 npm-debug.*
 yarn-debug.*
 yarn-error.*
 
-# macOS
-.DS_Store
-*.pem
+# ============================================================
+# JEST / TESTING
+# ============================================================
 
-# local env files
-.env*.local
+.jest/
+jest-container-output.txt
+jest-screen-output.txt
+trukturering_1h
 
-# typescript
-*.tsbuildinfo
+# Allow committed Jest snapshots for UserPerson tests
+!src/features/user/screens/UserPerson/__tests__/__snapshots__/
 
-example
+# ============================================================
+# PROJECT-SPECIFIC / TEMPORARY
+# ============================================================
 
-# generated native folders
-/ios
-/android
+apk_contents/
+local_moods_list.txt
+verify-pack-*.txt
+untracked-files.txt
+my-work-changes.patch
+*.patch
