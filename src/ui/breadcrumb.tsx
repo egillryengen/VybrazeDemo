@@ -1,133 +1,104 @@
 // C:\VybrazeDemo\src\ui\breadcrumb.tsx
 import { ChevronRight, MoreHorizontal } from "@/lib/icons";
-import { cn } from "@/ui/utils";
+import React from "react";
 import {
-    GestureResponderEvent,
-    StyleSheet,
-    Text,
-    TextStyle,
-    TouchableOpacity,
-    View,
-    ViewStyle,
+  GestureResponderEvent,
+  StyleProp,
+  StyleSheet,
+  Text,
+  TextStyle,
+  TouchableOpacity,
+  View,
+  ViewStyle,
 } from "react-native";
 
-type Crumb = {
-  key?: string;
-  label: string;
-  onPress?: (e?: GestureResponderEvent) => void;
-  /** Hvis true, vises som aktiv/aktuell side (ikke trykkbar) */
-  isCurrent?: boolean;
-  /** Valgfri ekstra stil for crumb container */
-  style?: ViewStyle;
-  /** Valgfri ekstra stil for crumb tekst */
-  textStyle?: TextStyle;
-};
-
-type BreadcrumbProps = {
-  items: Crumb[];
-  /** Maks antall crumbs før vi viser "more" (vises som første element) */
-  maxVisible?: number;
-  /** Ekstra stil på wrapper */
-  style?: ViewStyle;
-};
-
 /**
- * Enkel, tilgjengelig Breadcrumb-komponent for RN.
- * - Ingen routing eller Link-avhengighet.
- * - Bruker cn(...) for å slå sammen StyleSheet-objekter.
+ * Enkel lokal cn helper for å kombinere styles.
+ * Returnerer en array som kan kastes til StyleProp ved brukspunktet.
+ * Hvis dere har en felles cn i prosjektet, bytt denne ut med import.
  */
-export default function Breadcrumb({
-  items,
-  maxVisible = 5,
-  style,
-}: BreadcrumbProps) {
-  if (!items || items.length === 0) return null;
+function cn(...args: any[]) {
+  return args.flat().filter(Boolean);
+}
 
-  // Hvis for mange items, vis første, "more" og de siste N-2
-  const shouldCollapse = items.length > maxVisible;
-  let visible: Crumb[] = items;
+type Crumb = {
+  label: string;
+  onPress?: (e: GestureResponderEvent) => void;
+  style?: StyleProp<ViewStyle>;
+  textStyle?: StyleProp<TextStyle>;
+};
 
-  if (shouldCollapse) {
-    const lastCount = maxVisible - 2; // f.eks. 5 -> vis 1, more, 3 siste
-    const first = items[0];
-    const last = items.slice(-lastCount);
-    visible = [first, { key: "__more__", label: "...", onPress: undefined }, ...last];
-  }
+type BreadcrumbsProps = {
+  crumbs: Crumb[];
+  style?: StyleProp<ViewStyle>;
+};
 
+export default function Breadcrumbs({ crumbs, style }: BreadcrumbsProps) {
   return (
-    <View style={cn(styles.wrapper, style)}>
-      {visible.map((crumb, idx) => {
-        const isMore = crumb.key === "__more__" || crumb.label === "...";
-        const isLast = idx === visible.length - 1;
+    <View style={cn(styles.container, style) as StyleProp<ViewStyle>}>
+      {crumbs.map((crumb, idx) => {
+        const isLast = idx === crumbs.length - 1;
+        const crumbViewStyle = cn(styles.crumbContainer, crumb.style) as StyleProp<ViewStyle>;
+        const crumbTextStyle = cn(styles.crumbText, crumb.textStyle) as StyleProp<TextStyle>;
+
         return (
-          <View key={crumb.key ?? `${idx}-${crumb.label}`} style={styles.crumbRow}>
-            {isMore ? (
-              <View style={styles.moreContainer}>
-                <MoreHorizontal width={16} height={16} color="#666" />
-              </View>
-            ) : crumb.isCurrent || isLast ? (
-              <View style={cn(styles.crumbContainer, crumb.style)}>
-                <Text style={cn(styles.crumbTextCurrent, crumb.textStyle)} accessibilityState={{ selected: true }}>
+          <React.Fragment key={idx}>
+            <TouchableOpacity
+              onPress={crumb.onPress}
+              accessibilityRole="button"
+              style={crumbViewStyle}
+              disabled={!crumb.onPress}
+            >
+              {isLast ? (
+                <Text
+                  style={cn(styles.crumbTextCurrent, crumb.textStyle) as StyleProp<TextStyle>}
+                  accessibilityState={{ selected: true }}
+                >
                   {crumb.label}
                 </Text>
-              </View>
-            ) : (
-              <TouchableOpacity
-                style={cn(styles.crumbContainer, crumb.style)}
-                onPress={crumb.onPress}
-                activeOpacity={0.7}
-                accessibilityRole="button"
-                accessibilityLabel={`Gå til ${crumb.label}`}
-              >
-                <Text style={cn(styles.crumbText, crumb.textStyle)}>{crumb.label}</Text>
-              </TouchableOpacity>
-            )}
+              ) : (
+                <Text style={crumbTextStyle}>{crumb.label}</Text>
+              )}
+            </TouchableOpacity>
 
-            {/* Separator: vis ikke etter siste */}
-            {!isLast && <View style={styles.separator}><ChevronRight width={14} height={14} color="#999" /></View>}
-          </View>
+            {!isLast && (
+              <View style={styles.separator}>
+                <ChevronRight size={16} color="#666" />
+              </View>
+            )}
+          </React.Fragment>
         );
       })}
+
+      <View style={styles.moreButton}>
+        <MoreHorizontal size={20} color="#666" />
+      </View>
     </View>
   );
 }
 
-/* Styles */
 const styles = StyleSheet.create({
-  wrapper: {
+  container: {
     flexDirection: "row",
     alignItems: "center",
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    backgroundColor: "transparent",
-  },
-  crumbRow: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
+  } as ViewStyle,
   crumbContainer: {
-    paddingVertical: 6,
     paddingHorizontal: 8,
-    borderRadius: 6,
-  },
-  moreContainer: {
     paddingVertical: 6,
-    paddingHorizontal: 8,
-    justifyContent: "center",
-    alignItems: "center",
-  },
+  } as ViewStyle,
   crumbText: {
     fontSize: 14,
-    color: "#007AFF",
-  },
+    color: "#333",
+  } as TextStyle,
   crumbTextCurrent: {
     fontSize: 14,
-    color: "#111",
-    fontWeight: "600",
-  },
+    fontWeight: "700",
+    color: "#000",
+  } as TextStyle,
   separator: {
-    marginHorizontal: 6,
-    justifyContent: "center",
-    alignItems: "center",
-  },
+    marginHorizontal: 4,
+  } as ViewStyle,
+  moreButton: {
+    marginLeft: 8,
+  } as ViewStyle,
 });

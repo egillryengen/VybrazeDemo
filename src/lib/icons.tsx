@@ -1,20 +1,28 @@
-// src/lib/icons.tsx
-import React from 'react';
-import { Feather } from '@expo/vector-icons';
-import { ViewProps } from 'react-native';
+// C:\VybrazeDemo\src\lib\icons.tsx
+import { Feather } from "@expo/vector-icons";
+import React from "react";
+import type { StyleProp, TextStyle } from "react-native";
 
-type IconProps = {
-  width?: number;
-  height?: number;
+/**
+ * Vi eksponerer kun de props vi trenger til Feather og sørger for at
+ * `style` som sendes til Feather har riktig TextStyle-typing.
+ */
+type FeatherProps = React.ComponentProps<typeof Feather>;
+
+type IconWrapperProps = {
+  size?: number;
   color?: string;
-} & ViewProps;
+  style?: StyleProp<TextStyle>;
+} & Omit<FeatherProps, "name" | "style" | "size" | "color">;
 
-export const ChevronRight = ({ width = 16, height = 16, color = '#000', ...rest }: IconProps) => (
-  <Feather name='chevron-right' size={Math.max(width, height)} color={color} {...rest} />
-);
+export const ChevronRight = (props: IconWrapperProps) => {
+  const { size = 16, color = "#000", style, ...rest } = props;
+  const restProps = rest as Omit<FeatherProps, "name" | "style">;
+  return <Feather name="chevron-right" size={size} color={color} style={style} {...restProps} />;
+};
 
-export const MoreHorizontal = ({ width = 16, height = 16, color = '#000', ...rest }: IconProps) => (
-  <Feather name='more-horizontal' size={Math.max(width, height)} color={color} {...rest} />
-);
-
-export default { ChevronRight, MoreHorizontal };
+export const MoreHorizontal = (props: IconWrapperProps) => {
+  const { size = 16, color = "#000", style, ...rest } = props;
+  const restProps = rest as Omit<FeatherProps, "name" | "style">;
+  return <Feather name="more-horizontal" size={size} color={color} style={style} {...restProps} />;
+};
