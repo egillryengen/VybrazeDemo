@@ -1,38 +1,52 @@
-﻿// src/app/index.tsx
-import { useEffect } from 'react';
+﻿import React, { useEffect } from 'react';
 import Home from './home';
 
 /**
- * Hvis expo-router er installert i runtime, bruk useRouter for å
- * redirecte til /home uten å vise en synlig mellomtilstand.
- * Hvis ikke, render Home direkte.
+ * Robust index:
+ * - Vis Home umiddelbart som fallback.
+ * - Hvis expo-router er tilgjengelig, forsøk en trygg replace('/home') i bakgrunnen.
  */
+
 let maybeUseRouter: any;
 try {
-  // Dynamisk require slik at filen også kan fungere uten expo-router i noen miljøer
+  // Dynamisk require for å unngå bygg tid avhengighet
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   const mod = require('expo-router');
   maybeUseRouter = mod?.useRouter;
-} catch (e) {
+} catch {
   maybeUseRouter = undefined;
 }
 
-function RouterRedirect() {
+function RouterRedirectWithFallback() {
   const router = maybeUseRouter?.();
   useEffect(() => {
-    const t = setTimeout(() => {
+    let cancelled = false;
+    const run = async () => {
       try {
-        router?.replace?.('/home');
+        // Kort delay for å la native init og router bli klare
+        await new Promise((r) => setTimeout(r, 100));
+        if (!cancelled) {
+          // Try/catch for å unngå uhandlet feil
+          try {
+            router?.replace?.('/home');
+          } catch {
+            // ignore
+          }
+        }
       } catch {
-        // swallow errors
+        // ignore
       }
-    }, 50);
-    return () => clearTimeout(t);
+    };
+    run();
+    return () => {
+      cancelled = true;
+    };
   }, [router]);
 
-  return null;
+  // Viktig: returner Home som fallback slik at UI aldri er blank
+  return <Home />;
 }
 
 export default function Index() {
-  return maybeUseRouter ? <RouterRedirect /> : <Home />;
+  return maybeUseRouter ? <RouterRedirectWithFallback /> : <Home />;
 }
