@@ -1,5 +1,5 @@
-﻿import React, { useEffect } from 'react';
-import Home from './home';
+﻿import React, { useEffect } from "react";
+import Home from "./pages/Home";
 
 /**
  * Robust index:
@@ -11,7 +11,7 @@ let maybeUseRouter: any;
 try {
   // Dynamisk require for å unngå bygg tid avhengighet
   // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const mod = require('expo-router');
+  const mod = require("expo-router");
   maybeUseRouter = mod?.useRouter;
 } catch {
   maybeUseRouter = undefined;
@@ -26,9 +26,8 @@ function RouterRedirectWithFallback() {
         // Kort delay for å la native init og router bli klare
         await new Promise((r) => setTimeout(r, 100));
         if (!cancelled) {
-          // Try/catch for å unngå uhandlet feil
           try {
-            router?.replace?.('/home');
+            router?.replace?.("/home");
           } catch {
             // ignore
           }
